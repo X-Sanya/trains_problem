@@ -21,12 +21,13 @@ func UploadData(fileName, sheetName string) ([]train.Train, error) {
 	}
 
 	trains := make([]train.Train, len(rows))
-
+	stations := make(map[int]bool)
 	for i, row := range rows {
 		trains[i], err = train.NewTrain(strings.Split(row[0], ";"))
 		if err != nil {
 			return nil, err
 		}
+		stations[trains[i].From] = true
 	}
 
 	return trains, nil

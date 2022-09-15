@@ -1,43 +1,32 @@
 package graph
 
 import (
-	"fmt"
-
 	"github.com/x-sanya/trains_problem/train"
 )
 
-type Graph map[int][]*train.Train
+type Graph map[int][]int
 
 func NewGraph(trains []train.Train) *Graph {
 	g := make(Graph)
-	for _, train := range trains {
-		g.AddTrain(train.From, &train)
+	for i, train := range trains {
+		g.AddTrain(train.From, i)
 	}
 	return &g
 }
 
-func (g *Graph) GetNodesAmount() int {
-	return len(*g)
+func (g *Graph) GetNodes() map[int]bool {
+	nodes := make(map[int]bool, len(*g))
+	for node := range *g {
+		nodes[node] = true
+	}
+	return nodes
 }
 
-func (g *Graph) AddTrain(node int, t *train.Train) {
+func (g *Graph) AddTrain(node, t int) {
 	_, ok := (*g)[node]
 	if !ok {
-		(*g)[node] = make([]*train.Train, 0)
+		(*g)[node] = make([]int, 0)
 	}
 	trains := (*g)[node]
-	newTrain := new(train.Train)
-	*newTrain = *t
-	(*g)[node] = append(trains, newTrain)
-}
-
-func (g *Graph) String() string {
-	result := ""
-	for numb, trains := range *g {
-		result += fmt.Sprint(numb, len(trains), ":\n")
-		for _, t := range trains {
-			result += fmt.Sprintln("\t", t)
-		}
-	}
-	return result
+	(*g)[node] = append(trains, t)
 }
